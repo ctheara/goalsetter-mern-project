@@ -2,10 +2,11 @@ const asyncHandler = require("express-async-handler");
 
 const Goal = require("../models/goalsModel");
 
-// @desc    Get goals
+// @desc    Get goals (for user)
 // @route   GET /api/goals
 // @access  Private
 const getGoals = asyncHandler(async (req, res) => {
+  //we are not using try/catch and instead using express-async-handler
   const goals = await Goal.find();
 
   res.status(200).json(goals);
@@ -14,7 +15,7 @@ const getGoals = asyncHandler(async (req, res) => {
 // @desc    Set goals
 // @route   POST /api/goals
 // @access  Private
-const setGoals = asyncHandler(async (req, res) => {
+const setGoal = asyncHandler(async (req, res) => {
   if (!req.body.text) {
     res.status(400);
     throw new Error("Please add a text field");
@@ -32,7 +33,7 @@ const setGoals = asyncHandler(async (req, res) => {
 // @desc    Update goals
 // @route   PUT /api/goals
 // @access  Private
-const updateGoals = asyncHandler(async (req, res) => {
+const updateGoal = asyncHandler(async (req, res) => {
   const goal = await Goal.findById(req.params.id);
 
   if (!goal) {
@@ -50,7 +51,7 @@ const updateGoals = asyncHandler(async (req, res) => {
 // @desc    Delete goals
 // @route   DELETE /api/goals
 // @access  Private
-const deleteGoals = asyncHandler(async (req, res) => {
+const deleteGoal = asyncHandler(async (req, res) => {
   const goal = await Goal.findById(req.params.id);
 
   if (!goal) {
@@ -59,13 +60,16 @@ const deleteGoals = asyncHandler(async (req, res) => {
   }
 
   await Goal.findByIdAndRemove(req.params.id);
+    // await goal.remove()  //this is what they had
 
-  res.status(200).json(req.params.id);
+
+  res.status(200).json({ id: req.params.id})
+  // res.status(200).json(req.params.id);
 });
 
 module.exports = {
   getGoals,
-  setGoals,
-  updateGoals,
-  deleteGoals,
+  setGoal,
+  updateGoal,
+  deleteGoal,
 };
